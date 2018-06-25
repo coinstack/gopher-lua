@@ -7,7 +7,7 @@ package lua
 import (
 	"context"
 	"fmt"
-	"github.com/yuin/gopher-lua/parse"
+	"github.com/coinstack/gopher-lua/parse"
 	"io"
 	"math"
 	"os"
@@ -98,6 +98,7 @@ type Options struct {
 	SkipOpenLibs bool
 	// Tells whether a Go stacktrace should be included in a Lua stacktrace when panics occur.
 	IncludeGoStackTrace bool
+	MaxInstSize         uint64
 }
 
 /* }}} */
@@ -338,6 +339,7 @@ func newLState(options Options) *LState {
 		hasErrorFunc: false,
 		mainLoop:     mainLoop,
 		ctx:          nil,
+		instCount:    0,
 	}
 	ls.Env = ls.G.Global
 	return ls

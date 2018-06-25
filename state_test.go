@@ -431,3 +431,20 @@ func TestPCallAfterFail(t *testing.T) {
 	err := L.PCall(0, 0, nil)
 	errorIfFalse(t, strings.Contains(err.Error(), "A New Error"), "error not propogated correctly")
 }
+
+func TestMaxInst(t *testing.T) {
+	const luaCode = `
+local t = 0
+for i = 1, 2000 do
+	t = t + i
+end
+return t
+`
+	L := NewState(Options{
+		IncludeGoStackTrace: true,
+		MaxInstSize:         1000,
+	})
+	err := L.DoString(luaCode)
+	errorIfNil(t, err)
+	errorIfFalse(t, strings.Contains(err.Error(), errMaxInstStr), "error not propogated correctly")
+}

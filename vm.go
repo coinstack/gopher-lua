@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+const (
+	errMaxInstStr = "exceeded the maximum instruction count"
+)
+
 func mainLoop(L *LState, baseframe *callFrame) {
 	var inst uint32
 	var cf *callFrame
@@ -28,8 +32,16 @@ func mainLoop(L *LState, baseframe *callFrame) {
 		cf = L.currentFrame
 		inst = cf.Fn.Proto.Code[cf.Pc]
 		cf.Pc++
-		if jumpTable[int(inst>>26)](L, inst, baseframe) == 1 {
+		opCode := int(inst >> 26)
+		if jumpTable[opCode](L, inst, baseframe) == 1 {
 			return
+		}
+		if L.Options.MaxInstSize > uint64(0) {
+			L.instCount += opProps[opCode].InstCount
+			if L.instCount > L.Options.MaxInstSize {
+				L.RaiseError(errMaxInstStr)
+				return
+			}
 		}
 	}
 }
@@ -57,8 +69,16 @@ func mainLoopWithContext(L *LState, baseframe *callFrame) {
 			L.RaiseError(L.ctx.Err().Error())
 			return
 		default:
-			if jumpTable[int(inst>>26)](L, inst, baseframe) == 1 {
+			opCode := int(inst >> 26)
+			if jumpTable[opCode](L, inst, baseframe) == 1 {
 				return
+			}
+			if L.Options.MaxInstSize > uint64(0) {
+				L.instCount += opProps[opCode].InstCount
+				if L.instCount > L.Options.MaxInstSize {
+					L.RaiseError(errMaxInstStr)
+					return
+				}
 			}
 		}
 	}
@@ -119,6 +139,7 @@ func switchToParentThread(L *LState, nargs int, haserror bool, kill bool) {
 }
 
 func callGFunction(L *LState, tailcall bool) bool {
+	L.instCount += 40
 	frame := L.currentFrame
 	gfnret := frame.Fn.GFunction(L)
 	if tailcall {

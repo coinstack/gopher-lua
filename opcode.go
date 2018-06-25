@@ -117,57 +117,58 @@ const (
 )
 
 type opProp struct {
-	Name     string
-	IsTest   bool
-	SetRegA  bool
-	ModeArgB opArgMode
-	ModeArgC opArgMode
-	Type     opType
+	Name      string
+	IsTest    bool
+	SetRegA   bool
+	ModeArgB  opArgMode
+	ModeArgC  opArgMode
+	Type      opType
+	InstCount uint64
 }
 
 var opProps = []opProp{
-	opProp{"MOVE", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"MOVEN", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"LOADK", false, true, opArgModeK, opArgModeN, opTypeABx},
-	opProp{"LOADBOOL", false, true, opArgModeU, opArgModeU, opTypeABC},
-	opProp{"LOADNIL", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"GETUPVAL", false, true, opArgModeU, opArgModeN, opTypeABC},
-	opProp{"GETGLOBAL", false, true, opArgModeK, opArgModeN, opTypeABx},
-	opProp{"GETTABLE", false, true, opArgModeR, opArgModeK, opTypeABC},
-	opProp{"GETTABLEKS", false, true, opArgModeR, opArgModeK, opTypeABC},
-	opProp{"SETGLOBAL", false, false, opArgModeK, opArgModeN, opTypeABx},
-	opProp{"SETUPVAL", false, false, opArgModeU, opArgModeN, opTypeABC},
-	opProp{"SETTABLE", false, false, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"SETTABLEKS", false, false, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"NEWTABLE", false, true, opArgModeU, opArgModeU, opTypeABC},
-	opProp{"SELF", false, true, opArgModeR, opArgModeK, opTypeABC},
-	opProp{"ADD", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"SUB", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"MUL", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"DIV", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"MOD", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"POW", false, true, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"UNM", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"NOT", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"LEN", false, true, opArgModeR, opArgModeN, opTypeABC},
-	opProp{"CONCAT", false, true, opArgModeR, opArgModeR, opTypeABC},
-	opProp{"JMP", false, false, opArgModeR, opArgModeN, opTypeASbx},
-	opProp{"EQ", true, false, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"LT", true, false, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"LE", true, false, opArgModeK, opArgModeK, opTypeABC},
-	opProp{"TEST", true, true, opArgModeR, opArgModeU, opTypeABC},
-	opProp{"TESTSET", true, true, opArgModeR, opArgModeU, opTypeABC},
-	opProp{"CALL", false, true, opArgModeU, opArgModeU, opTypeABC},
-	opProp{"TAILCALL", false, true, opArgModeU, opArgModeU, opTypeABC},
-	opProp{"RETURN", false, false, opArgModeU, opArgModeN, opTypeABC},
-	opProp{"FORLOOP", false, true, opArgModeR, opArgModeN, opTypeASbx},
-	opProp{"FORPREP", false, true, opArgModeR, opArgModeN, opTypeASbx},
-	opProp{"TFORLOOP", true, false, opArgModeN, opArgModeU, opTypeABC},
-	opProp{"SETLIST", false, false, opArgModeU, opArgModeU, opTypeABC},
-	opProp{"CLOSE", false, false, opArgModeN, opArgModeN, opTypeABC},
-	opProp{"CLOSURE", false, true, opArgModeU, opArgModeN, opTypeABx},
-	opProp{"VARARG", false, true, opArgModeU, opArgModeN, opTypeABC},
-	opProp{"NOP", false, false, opArgModeR, opArgModeN, opTypeASbx},
+	opProp{"MOVE", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"MOVEN", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"LOADK", false, true, opArgModeK, opArgModeN, opTypeABx, uint64(1)},
+	opProp{"LOADBOOL", false, true, opArgModeU, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"LOADNIL", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"GETUPVAL", false, true, opArgModeU, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"GETGLOBAL", false, true, opArgModeK, opArgModeN, opTypeABx, uint64(1)},
+	opProp{"GETTABLE", false, true, opArgModeR, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"GETTABLEKS", false, true, opArgModeR, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"SETGLOBAL", false, false, opArgModeK, opArgModeN, opTypeABx, uint64(1)},
+	opProp{"SETUPVAL", false, false, opArgModeU, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"SETTABLE", false, false, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"SETTABLEKS", false, false, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"NEWTABLE", false, true, opArgModeU, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"SELF", false, true, opArgModeR, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"ADD", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"SUB", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"MUL", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"DIV", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"MOD", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"POW", false, true, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"UNM", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"NOT", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"LEN", false, true, opArgModeR, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"CONCAT", false, true, opArgModeR, opArgModeR, opTypeABC, uint64(1)},
+	opProp{"JMP", false, false, opArgModeR, opArgModeN, opTypeASbx, uint64(1)},
+	opProp{"EQ", true, false, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"LT", true, false, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"LE", true, false, opArgModeK, opArgModeK, opTypeABC, uint64(1)},
+	opProp{"TEST", true, true, opArgModeR, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"TESTSET", true, true, opArgModeR, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"CALL", false, true, opArgModeU, opArgModeU, opTypeABC, uint64(10)},
+	opProp{"TAILCALL", false, true, opArgModeU, opArgModeU, opTypeABC, uint64(10)},
+	opProp{"RETURN", false, false, opArgModeU, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"FORLOOP", false, true, opArgModeR, opArgModeN, opTypeASbx, uint64(1)},
+	opProp{"FORPREP", false, true, opArgModeR, opArgModeN, opTypeASbx, uint64(1)},
+	opProp{"TFORLOOP", true, false, opArgModeN, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"SETLIST", false, false, opArgModeU, opArgModeU, opTypeABC, uint64(1)},
+	opProp{"CLOSE", false, false, opArgModeN, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"CLOSURE", false, true, opArgModeU, opArgModeN, opTypeABx, uint64(1)},
+	opProp{"VARARG", false, true, opArgModeU, opArgModeN, opTypeABC, uint64(1)},
+	opProp{"NOP", false, false, opArgModeR, opArgModeN, opTypeASbx, uint64(1)},
 }
 
 func opGetOpCode(inst uint32) int {

@@ -444,6 +444,7 @@ return t
 		IncludeGoStackTrace: true,
 		MaxInstSize:         1000,
 	})
+	L.AddInstCount(100)
 	err := L.DoString(luaCode)
 	errorIfNil(t, err)
 	errorIfFalse(t, strings.Contains(err.Error(), errMaxInstStr), "error not propogated correctly")

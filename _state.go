@@ -94,7 +94,8 @@ type Options struct {
 	SkipOpenLibs bool
 	// Tells whether a Go stacktrace should be included in a Lua stacktrace when panics occur.
 	IncludeGoStackTrace bool
-	MaxInstSize         uint64
+	// Maximum instruction size
+	MaxInstSize uint64
 }
 
 /* }}} */
@@ -1780,6 +1781,16 @@ func (ls *LState) ToChannel(n int) chan LValue {
 		return (chan LValue)(lv)
 	}
 	return nil
+}
+
+/* }}} */
+
+/* utility operations {{{ */
+
+func (ls *LState) AddInstCount(n uint64) {
+	if ls.Options.MaxInstSize > 0 {
+		ls.instCount += n
+	}
 }
 
 /* }}} */
